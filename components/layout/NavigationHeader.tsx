@@ -39,10 +39,10 @@ export default function NavigationHeader() {
           </Menu.Trigger>
           <Menu.Positioner>
             <Menu.Content>
-              <Menu.Item value="profile">Profile</Menu.Item>
-              <Menu.Item value="settings">Settings</Menu.Item>
+              <Menu.Item value="monday">Monday</Menu.Item>
+              <Menu.Item value="wednesday">Wednesday</Menu.Item>
               <Menu.Separator />
-              <Menu.Item value="logout">Logout</Menu.Item>
+              <Menu.Item value="saturday">Saturday</Menu.Item>
             </Menu.Content>
           </Menu.Positioner>
         </Menu.Root>
@@ -70,10 +70,10 @@ export default function NavigationHeader() {
           </Menu.Trigger>
           <Menu.Positioner>
             <Menu.Content>
-              <Menu.Item value="profile">Profile</Menu.Item>
-              <Menu.Item value="settings">Settings</Menu.Item>
+              <Menu.Item value="tuesday">Tuesday</Menu.Item>
+              <Menu.Item value="friday">Friday</Menu.Item>
               <Menu.Separator />
-              <Menu.Item value="logout">Logout</Menu.Item>
+              <Menu.Item value="sunday">Sunday</Menu.Item>
             </Menu.Content>
           </Menu.Positioner>
         </Menu.Root>

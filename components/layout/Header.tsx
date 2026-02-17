@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Box,
-  HStack,
-  Text,
-  Icon,
-  Menu,
-  IconButton,
-  Badge,
-} from "@chakra-ui/react";
+import { Box, HStack, Text, Icon, Menu, IconButton } from "@chakra-ui/react";
 import { Setting2, Notification, Category } from "iconsax-reactjs";
 import { FiChevronDown } from "react-icons/fi";
 
@@ -27,30 +19,48 @@ export default function Header() {
       zIndex={10}
     >
       <HStack justify="flex-end">
-        <IconButton aria-label="Grid view">
+        <IconButton
+          aria-label="Grid view"
+          color="#5653FC"
+          borderRadius="md"
+          bg="#F6FAFD"
+        >
           <Category size="24" />
         </IconButton>
-        <IconButton aria-label="Settings">
+        <IconButton
+          aria-label="Settings"
+          color="#2D3648"
+          borderRadius="md"
+          bg="#F6FAFD"
+        >
           <Setting2 size="24" />
         </IconButton>
         <Box position="relative">
-          <IconButton aria-label="Notifications">
+          <IconButton
+            aria-label="Notifications"
+            color="#2D3648"
+            borderRadius="md"
+            bg="#F6FAFD"
+            fontWeight="bold"
+          >
             <Notification size="24" />
           </IconButton>
-          <Badge
+          <Box
             position="absolute"
-            top="8px"
-            right="8px"
-            colorScheme="red"
+            top="3"
+            right="3"
+            w="2.5"
+            h="2.5"
+            bg="red.500"
             borderRadius="full"
-            w="2px"
-            h="2px"
-            p={0}
+            border="2px solid white"
+            transform="translate(25%, -25%)"
+            zIndex="1"
           />
         </Box>
 
         <Menu.Root>
-          <Menu.Trigger asChild>
+          <Menu.Trigger ml={20}>
             <HStack cursor="pointer">
               <Box textAlign="right">
                 <Text fontSize="sm" fontWeight="600">
@@ -60,7 +70,7 @@ export default function Header() {
                   Paul@dotrot.com
                 </Text>
               </Box>
-              <Icon as={FiChevronDown} boxSize={4} color="gray.500" />
+              <Icon as={FiChevronDown} boxSize={4} ml={4} color="gray.500" />
             </HStack>
           </Menu.Trigger>
           <Menu.Positioner>

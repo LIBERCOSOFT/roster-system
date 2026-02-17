@@ -59,16 +59,42 @@ export default function FilterSortControls({
             borderColor="gray.200"
             p={1}
           />
-          <Icon as={Filter} boxSize={5} color="gray.600" cursor="pointer" />
-          <Button size="sm" variant="outline" onClick={onPrev}>
-            <BiLeftArrow />
-          </Button>
-          <Button size="sm" variant="outline" onClick={onToday}>
-            Current Day
-          </Button>
-          <Button size="sm" variant="outline" onClick={onNext}>
-            <BiRightArrow />
-          </Button>
+          <Icon
+            as={Filter}
+            boxSize={7}
+            color="gray.600"
+            cursor="pointer"
+            border="1px solid"
+            borderRadius="md"
+            borderColor="gray.200"
+            p={1}
+          />
+          <HStack gap={0}>
+            <Button
+              size="sm"
+              variant="outline"
+              borderRightRadius={0}
+              onClick={onPrev}
+            >
+              <BiLeftArrow />
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              borderRadius={0}
+              onClick={onToday}
+            >
+              Current Day
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              borderLeftRadius={0}
+              onClick={onNext}
+            >
+              <BiRightArrow />
+            </Button>
+          </HStack>
           <Menu.Root>
             <Menu.Trigger
               cursor="pointer"

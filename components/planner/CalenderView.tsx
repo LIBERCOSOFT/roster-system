@@ -1,188 +1,260 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Box, Grid, Text, Button, VStack, Popover } from "@chakra-ui/react";
 import { PlannerEvent, ViewMode } from "@/types";
 import PlannerEventCard from "./PlannerEventCard";
+import FilterSortControls from "./FilterSortControls";
 
 interface Props {
   viewMode: ViewMode;
-  currentDate: string;
   events: PlannerEvent[];
   onAddEvent: (e: PlannerEvent) => void;
   onUpdateEvent: (e: PlannerEvent) => void;
 }
 
-function startOfMonth(date: Date) {
-  return new Date(date.getFullYear(), date.getMonth(), 1);
-}
+const COLUMNS = [
+  { id: "treatment", label: "Behandelingkamer1" },
+  { id: "management", label: "Management" },
+  { id: "leave", label: "Bijzonderheden-Verlof-Cursus..." },
+  { id: "financial", label: "Financials" },
+];
 
-function daysInMonth(date: Date) {
-  const start = startOfMonth(date);
-  const result: Date[] = [];
-  const month = start.getMonth();
-  let d = new Date(start);
-  while (d.getMonth() === month) {
-    result.push(new Date(d));
-    d.setDate(d.getDate() + 1);
-  }
-  return result;
-}
+const TIME_SLOTS = Array.from({ length: 27 }, (_, i) => {
+  const hour = Math.floor(i / 2) + 8;
+  const minute = i % 2 === 0 ? "00" : "30";
+  return `${hour.toString().padStart(2, "0")}:${minute}`;
+});
 
-function monthGridDays(date: Date) {
-  const days = daysInMonth(date);
-  const firstWeekday = startOfMonth(date).getDay(); // 0 (Sun) - 6 (Sat)
-  const cells: Array<Date | null> = [];
-  for (let i = 0; i < firstWeekday; i++) cells.push(null);
-  days.forEach((d) => cells.push(d));
-  while (cells.length % 7 !== 0) cells.push(null);
-  return cells;
-}
-
-export default function CalendarView({
-  viewMode,
-  currentDate,
-  events,
-  onAddEvent,
-  onUpdateEvent,
-}: Props) {
+export default function CalendarView({ viewMode, events, onAddEvent }: Props) {
   const [selectedEvent, setSelectedEvent] = useState<PlannerEvent | null>(null);
+  const [currentDate, setCurrentDate] = useState<string>(
+    new Date().toISOString().slice(0, 10),
+  );
 
-  const monthDays = useMemo(() => {
-    const d = new Date(currentDate);
-    return monthGridDays(d);
-  }, [currentDate]);
+  useEffect(() => {
+    if (viewMode === "live") {
+      setCurrentDate(new Date().toISOString().slice(0, 10));
+    } else {
+      const d = new Date();
+      d.setMonth(d.getMonth() + 1);
+      d.setDate(1);
+      setCurrentDate(d.toISOString().slice(0, 10));
+    }
+  }, [viewMode]);
 
-  const eventsByDate = useMemo(() => {
-    const map: Record<string, PlannerEvent[]> = {};
-    events.forEach((e) => {
-      const key = e.date ?? currentDate;
-      if (!map[key]) map[key] = [];
-      map[key].push(e);
+  const todaysEvents = useMemo(
+    () => events.filter((e) => e.date === currentDate),
+    [events, currentDate],
+  );
+
+  const eventsByCell = useMemo(() => {
+    const map: Record<string, Record<string, PlannerEvent[]>> = {};
+    COLUMNS.forEach((col) => {
+      map[col.id] = {};
+      TIME_SLOTS.forEach((slot) => {
+        map[col.id][slot] = [];
+      });
+    });
+    todaysEvents.forEach((event) => {
+      const colId = event.column || "treatment";
+      const start = event.start;
+      if (map[colId] && map[colId][start]) {
+        map[colId][start].push(event);
+      }
     });
     return map;
-  }, [events, currentDate]);
+  }, [todaysEvents]);
 
-  function onCellDrop(ev: React.DragEvent, day: Date) {
+  const onCellDrop = (
+    ev: React.DragEvent,
+    columnId: string,
+    timeSlot: string,
+  ) => {
     ev.preventDefault();
     const user = ev.dataTransfer.getData("text/user");
     if (!user) return;
-    const iso = day.toISOString().slice(0, 10);
     const newEvent: PlannerEvent = {
       id: String(Date.now()),
       title: "Shift",
-      start: "09:00",
-      end: "17:00",
+      start: timeSlot,
+      end: getEndTime(timeSlot),
       user,
-      column: "Behandelkamer1",
-      color: "#60A5FA",
-      date: iso,
+      column: columnId,
+      color: "#3182CE",
+      date: currentDate,
     };
     onAddEvent(newEvent);
-  }
+  };
+
+  const getEndTime = (start: string): string => {
+    const [h, m] = start.split(":").map(Number);
+    const endHour = h + 1;
+    return `${endHour.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
+  };
+
+  const EventPopover = ({ event }: { event: PlannerEvent }) => (
+    <Popover.Root
+      open={selectedEvent?.id === event.id}
+      onOpenChange={({ open }) => setSelectedEvent(open ? event : null)}
+    >
+      <Popover.Trigger asChild>
+        <Box cursor="pointer">
+          <PlannerEventCard event={event} />
+        </Box>
+      </Popover.Trigger>
+      <Popover.Positioner>
+        <Popover.Content>
+          <Popover.CloseTrigger onClick={() => setSelectedEvent(null)} />
+          <Popover.Arrow>
+            <Popover.ArrowTip />
+          </Popover.Arrow>
+          <Popover.Body>
+            <Popover.Title>
+              <Text fontWeight="bold">{event.title}</Text>
+            </Popover.Title>
+            <Text mt={1}>{event.user}</Text>
+            <Text fontSize="sm" color="gray.500" mt={1}>
+              {event.date} — {event.start} to {event.end}
+            </Text>
+            <Button size="sm" mt={4} onClick={() => setSelectedEvent(null)}>
+              Close
+            </Button>
+          </Popover.Body>
+        </Popover.Content>
+      </Popover.Positioner>
+    </Popover.Root>
+  );
 
   return (
-    <Box flex="1" overflow="auto" m={6} borderRadius="2xl">
-      <Grid templateColumns="repeat(7, 1fr)" gap={2}>
-        {/* Weekday headings */}
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((w) => (
-          <Box
-            key={w}
-            p={2}
-            textAlign="center"
-            bg="gray.50"
-            border="1px solid"
-            borderColor="gray.100"
-            rounded="md"
-          >
-            <Text fontSize="sm" fontWeight="600">
-              {w}
-            </Text>
+    <VStack align="stretch" flex="1" h="full">
+      <FilterSortControls
+        currentDate={currentDate}
+        onPrev={() => {
+          const d = new Date(currentDate);
+          d.setDate(d.getDate() - 1);
+          setCurrentDate(d.toISOString().slice(0, 10));
+        }}
+        onNext={() => {
+          const d = new Date(currentDate);
+          d.setDate(d.getDate() + 1);
+          setCurrentDate(d.toISOString().slice(0, 10));
+        }}
+        onToday={() => setCurrentDate(new Date().toISOString().slice(0, 10))}
+      />
+
+      <Box
+        flex="1"
+        overflow="auto"
+        m={6}
+        borderRadius="2xl"
+        bg="white"
+        shadow="sm"
+      >
+        <Grid
+          templateColumns={`100px repeat(${COLUMNS.length}, 1fr)`}
+          gap={0}
+          bg="gray.50"
+          borderBottom="1px solid"
+          borderColor="gray.200"
+          position="sticky"
+          top={0}
+          zIndex={1}
+        >
+          <Box p={3} fontWeight="bold" color="gray.600">
+            Time
           </Box>
-        ))}
-
-        {monthDays.map((d, idx) => {
-          if (!d) {
-            return (
-              <Box
-                key={`empty-${idx}`}
-                minH="120px"
-                border="1px solid"
-                borderColor="gray.200"
-                rounded="md"
-                p={2}
-                bg="gray.50"
-              />
-            );
-          }
-
-          const iso = d.toISOString().slice(0, 10);
-          const dayEvents = eventsByDate[iso] ?? [];
-          return (
+          {COLUMNS.map((col) => (
             <Box
-              key={iso}
-              minH="120px"
-              border="1px solid"
+              key={col.id}
+              p={3}
+              textAlign="center"
+              borderLeft="1px solid"
               borderColor="gray.200"
-              rounded="md"
-              p={2}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => onCellDrop(e, d)}
+              fontWeight="600"
             >
-              <Text fontSize="sm" fontWeight="600">
-                {d.getDate()}
-              </Text>
-              <VStack align="stretch" mt={2}>
-                {dayEvents.map((ev) => (
-                  <Popover.Root
-                    key={ev.id}
-                    open={selectedEvent?.id === ev.id}
-                    onOpenChange={({ open }) =>
-                      setSelectedEvent(open ? ev : null)
-                    }
-                  >
-                    <Popover.Trigger asChild>
-                      <Box
-                        cursor="pointer"
-                        onClick={() => setSelectedEvent(ev)}
-                      >
-                        <PlannerEventCard event={ev} />
-                      </Box>
-                    </Popover.Trigger>
-
-                    <Popover.Positioner>
-                      <Popover.Content>
-                        <Popover.CloseTrigger
-                          onClick={() => setSelectedEvent(null)}
-                        />
-                        <Popover.Arrow>
-                          <Popover.ArrowTip />
-                        </Popover.Arrow>
-                        <Popover.Body>
-                          <Popover.Title>
-                            <Text fontWeight="bold">{ev.title}</Text>
-                          </Popover.Title>
-                          <Text mt={1}>{ev.user}</Text>
-                          <Text fontSize="sm" color="gray.500" mt={1}>
-                            {ev.date} — {ev.start} to {ev.end}
-                          </Text>
-                          <Button
-                            size="sm"
-                            mt={4}
-                            onClick={() => setSelectedEvent(null)}
-                          >
-                            Close
-                          </Button>
-                        </Popover.Body>
-                      </Popover.Content>
-                    </Popover.Positioner>
-                  </Popover.Root>
-                ))}
-              </VStack>
+              {col.label}
             </Box>
-          );
-        })}
-      </Grid>
-    </Box>
+          ))}
+        </Grid>
+
+        {TIME_SLOTS.map((time) => (
+          <Grid
+            key={time}
+            templateColumns={`100px repeat(${COLUMNS.length}, 1fr)`}
+            gap={0}
+            borderBottom="1px solid"
+            borderColor="gray.100"
+            minH="60px"
+          >
+            <Box p={2} bg="gray.50" fontWeight="500" color="gray.700">
+              {time}
+            </Box>
+
+            {COLUMNS.map((col) => {
+              const cellEvents = eventsByCell[col.id]?.[time] || [];
+              const showAll = cellEvents.length > 2;
+              const displayedEvents = showAll
+                ? cellEvents.slice(0, 2)
+                : cellEvents;
+
+              return (
+                <Box
+                  key={`${col.id}-${time}`}
+                  p={1}
+                  borderLeft="1px solid"
+                  borderColor="gray.200"
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => onCellDrop(e, col.id, time)}
+                  bg="white"
+                  _hover={{ bg: "gray.50" }}
+                  transition="background 0.1s"
+                >
+                  {displayedEvents.map((ev) => (
+                    <EventPopover key={ev.id} event={ev} />
+                  ))}
+                  {showAll && (
+                    <Popover.Root>
+                      <Popover.Trigger asChild>
+                        <Text
+                          fontSize="xs"
+                          color="blue.500"
+                          fontWeight="medium"
+                          cursor="pointer"
+                          mt={1}
+                          textAlign="center"
+                        >
+                          See all
+                        </Text>
+                      </Popover.Trigger>
+                      <Popover.Positioner>
+                        <Popover.Content>
+                          <Popover.CloseTrigger />
+                          <Popover.Arrow>
+                            <Popover.ArrowTip />
+                          </Popover.Arrow>
+                          <Popover.Body>
+                            <VStack align="stretch" gap={2}>
+                              {cellEvents.map((ev) => (
+                                <Box
+                                  key={ev.id}
+                                  onClick={() => setSelectedEvent(ev)}
+                                >
+                                  <PlannerEventCard event={ev} />
+                                </Box>
+                              ))}
+                            </VStack>
+                          </Popover.Body>
+                        </Popover.Content>
+                      </Popover.Positioner>
+                    </Popover.Root>
+                  )}
+                </Box>
+              );
+            })}
+          </Grid>
+        ))}
+      </Box>
+    </VStack>
   );
 }

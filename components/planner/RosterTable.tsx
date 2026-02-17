@@ -10,8 +10,9 @@ export default function RosterTable() {
       borderRight="1px solid"
       borderColor="gray.200"
       p={4}
+      mt={6}
     >
-      <Text fontWeight="bold" mb={4}>
+      <Text textStyle="lg" fontWeight="bold" mb={4}>
         Roster
       </Text>
       <VStack align="stretch">
