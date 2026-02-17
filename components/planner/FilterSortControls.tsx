@@ -45,22 +45,24 @@ export default function FilterSortControls({
         <HStack gap={3}>
           <Icon
             as={People}
-            boxSize={7}
+            boxSize={8}
             color="gray.600"
             cursor="pointer"
             border="1px solid"
             borderRadius="md"
             borderColor="gray.200"
+            _hover={{ bg: "gray.100" }}
             p={1}
           />
           <Icon
             as={Filter}
-            boxSize={7}
+            boxSize={8}
             color="gray.600"
             cursor="pointer"
             border="1px solid"
             borderRadius="md"
             borderColor="gray.200"
+            _hover={{ bg: "gray.100" }}
             p={1}
           />
           <HStack gap={0}>
@@ -68,6 +70,8 @@ export default function FilterSortControls({
               size="sm"
               variant="outline"
               borderRightRadius={0}
+              color="gray.600"
+              _hover={{ bg: "gray.100" }}
               onClick={onPrev}
             >
               <BiLeftArrow />
@@ -76,6 +80,8 @@ export default function FilterSortControls({
               size="sm"
               variant="outline"
               borderRadius={0}
+              color="gray.600"
+              _hover={{ bg: "gray.100" }}
               onClick={onToday}
             >
               Current Day
@@ -84,6 +90,8 @@ export default function FilterSortControls({
               size="sm"
               variant="outline"
               borderLeftRadius={0}
+              color="gray.600"
+              _hover={{ bg: "gray.100" }}
               onClick={onNext}
             >
               <BiRightArrow />
@@ -96,30 +104,47 @@ export default function FilterSortControls({
               _hover={{ bg: "gray.100" }}
               px={2}
               py={1}
-              border="none"
+              border="1px solid"
+              borderColor="gray.200"
               bg="transparent"
               display="flex"
               alignItems="center"
               gap={2}
             >
-              <Text fontSize="sm" fontWeight="600">
+              <Text
+                fontSize="sm"
+                fontWeight="600"
+                borderRadius="full"
+                px={2}
+                py={1}
+              >
                 This Day
               </Text>
               <Icon as={FiChevronDown} boxSize={4} color="gray.500" />
             </Menu.Trigger>
             <Menu.Positioner>
               <Menu.Content>
-                <Menu.Item value="profile">Profile</Menu.Item>
-                <Menu.Item value="settings">Settings</Menu.Item>
+                <Menu.Item value="week">This Week</Menu.Item>
+                <Menu.Item value="month">This Month</Menu.Item>
                 <Menu.Separator />
-                <Menu.Item value="logout">Logout</Menu.Item>
+                <Menu.Item value="year">This Year</Menu.Item>
               </Menu.Content>
             </Menu.Positioner>
           </Menu.Root>
-          <Button size="sm" variant="outline">
+          <Button
+            size="sm"
+            variant="outline"
+            color="gray.600"
+            _hover={{ bg: "gray.100" }}
+          >
             Publish All
           </Button>
-          <Button size="sm" variant="outline">
+          <Button
+            size="sm"
+            variant="outline"
+            color="gray.600"
+            _hover={{ bg: "gray.100" }}
+          >
             <Icon as={FiPlus} boxSize={4} color="gray.500" />
             Lock Shift
           </Button>

@@ -24,6 +24,7 @@ export default function ViewModuleToggler({
               bg={viewMode === "live" ? "red.500" : "transparent"}
               borderRadius="full"
               onClick={() => onViewModeChange("live")}
+              color={viewMode === "live" ? "white" : "gray.400"}
               py={1}
               px={4}
             >
@@ -35,6 +36,7 @@ export default function ViewModuleToggler({
               bg={viewMode === "planner" ? "blue.500" : "transparent"}
               borderRadius="full"
               onClick={() => onViewModeChange("planner")}
+              color={viewMode === "planner" ? "white" : "gray.400"}
               py={1}
               px={4}
             >

@@ -24,9 +24,10 @@ export default function NavigationHeader() {
             cursor="pointer"
             borderRadius="md"
             _hover={{ bg: "gray.100" }}
+            border="1px solid"
+            borderColor="gray.200"
             px={2}
             py={1}
-            border="none"
             bg="transparent"
             display="flex"
             alignItems="center"
@@ -54,7 +55,8 @@ export default function NavigationHeader() {
             _hover={{ bg: "gray.100" }}
             px={2}
             py={1}
-            border="none"
+            border="1px solid"
+            borderColor="gray.200"
             bg="transparent"
             display="flex"
             alignItems="center"
