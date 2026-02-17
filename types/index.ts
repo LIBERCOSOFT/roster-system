@@ -8,5 +8,26 @@ export type PlannerEvent = {
   user: string;
   column: string;
   color: string;
-  date?: string; // ISO date string, optional for time-only events
+  date?: string;
 };
+
+
+// INTERFACES
+export interface PlannerProps {
+  viewMode: ViewMode;
+  onViewModeChange: (mode: ViewMode) => void;
+}
+
+export interface FilterSortControlsProps {
+  currentDate?: string;
+  onPrev?: () => void;
+  onNext?: () => void;
+  onToday?: () => void;
+}
+
+export interface CalendarViewProps {
+  viewMode: ViewMode;
+  events: PlannerEvent[];
+  onAddEvent: (e: PlannerEvent) => void;
+  onUpdateEvent: (e: PlannerEvent) => void;
+}

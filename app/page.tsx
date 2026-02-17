@@ -15,7 +15,7 @@ export default function Home() {
   const [viewMode, setViewMode] = useState<ViewMode>("live");
   const [events, setEvents] = useState(sampleEvents);
 
-  const handleViewModeChange = (mode: ViewMode) => {
+  const handleViewModeChange = (mode: ViewMode): void => {
     setViewMode(mode);
   };
 

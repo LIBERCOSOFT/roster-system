@@ -1,12 +1,7 @@
 "use client";
 
-import { ViewMode } from "@/types";
+import { PlannerProps } from "@/types";
 import { Box, Button, HStack, Text } from "@chakra-ui/react";
-
-interface PlannerProps {
-  viewMode: ViewMode;
-  onViewModeChange: (mode: ViewMode) => void;
-}
 
 export default function ViewModuleToggler({
   viewMode,

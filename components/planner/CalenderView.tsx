@@ -2,31 +2,16 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { Box, Grid, Text, Button, VStack, Popover } from "@chakra-ui/react";
-import { PlannerEvent, ViewMode } from "@/types";
+import { CalendarViewProps, PlannerEvent, ViewMode } from "@/types";
 import PlannerEventCard from "./PlannerEventCard";
 import FilterSortControls from "./FilterSortControls";
+import { COLUMNS, TIME_SLOTS } from "@/utils";
 
-interface Props {
-  viewMode: ViewMode;
-  events: PlannerEvent[];
-  onAddEvent: (e: PlannerEvent) => void;
-  onUpdateEvent: (e: PlannerEvent) => void;
-}
-
-const COLUMNS = [
-  { id: "treatment", label: "Behandelingkamer1" },
-  { id: "management", label: "Management" },
-  { id: "leave", label: "Bijzonderheden-Verlof-Cursus..." },
-  { id: "financial", label: "Financials" },
-];
-
-const TIME_SLOTS = Array.from({ length: 27 }, (_, i) => {
-  const hour = Math.floor(i / 2) + 8;
-  const minute = i % 2 === 0 ? "00" : "30";
-  return `${hour.toString().padStart(2, "0")}:${minute}`;
-});
-
-export default function CalendarView({ viewMode, events, onAddEvent }: Props) {
+export default function CalendarView({
+  viewMode,
+  events,
+  onAddEvent,
+}: CalendarViewProps) {
   const [selectedEvent, setSelectedEvent] = useState<PlannerEvent | null>(null);
   const [currentDate, setCurrentDate] = useState<string>(
     new Date().toISOString().slice(0, 10),

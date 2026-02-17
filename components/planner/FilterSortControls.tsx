@@ -1,23 +1,17 @@
 "use client";
 
-import { Box, Button, Flex, HStack, Icon, Menu, Text } from "@chakra-ui/react";
+import { FilterSortControlsProps } from "@/types";
+import { Button, Flex, HStack, Icon, Menu, Text } from "@chakra-ui/react";
 import { Filter, People } from "iconsax-reactjs";
 import { BiLeftArrow, BiRightArrow } from "react-icons/bi";
 import { FiChevronDown, FiPlus } from "react-icons/fi";
-
-interface Props {
-  currentDate?: string;
-  onPrev?: () => void;
-  onNext?: () => void;
-  onToday?: () => void;
-}
 
 export default function FilterSortControls({
   currentDate,
   onPrev,
   onNext,
   onToday,
-}: Props) {
+}: FilterSortControlsProps) {
   const date = currentDate ? new Date(currentDate) : new Date();
   const dayLabel = date.toLocaleString(undefined, {
     weekday: "short",
