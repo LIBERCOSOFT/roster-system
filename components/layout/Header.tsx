@@ -9,7 +9,7 @@ import {
   IconButton,
   Badge,
 } from "@chakra-ui/react";
-import { Element3, Setting2, Notification } from "iconsax-reactjs";
+import { Setting2, Notification, Category } from "iconsax-reactjs";
 import { FiChevronDown } from "react-icons/fi";
 
 export default function Header() {
@@ -28,7 +28,7 @@ export default function Header() {
     >
       <HStack justify="flex-end">
         <IconButton aria-label="Grid view">
-          <Element3 size="24" />
+          <Category size="24" />
         </IconButton>
         <IconButton aria-label="Settings">
           <Setting2 size="24" />
@@ -43,8 +43,8 @@ export default function Header() {
             right="8px"
             colorScheme="red"
             borderRadius="full"
-            w="8px"
-            h="8px"
+            w="2px"
+            h="2px"
             p={0}
           />
         </Box>
