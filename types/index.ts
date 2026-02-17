@@ -8,4 +8,5 @@ export type PlannerEvent = {
   user: string;
   column: string;
   color: string;
+  date?: string; // ISO date string, optional for time-only events
 };

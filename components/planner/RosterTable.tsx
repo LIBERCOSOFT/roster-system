@@ -14,14 +14,29 @@ export default function RosterTable() {
       <Text fontWeight="bold" mb={4}>
         Roster
       </Text>
-
       <VStack align="stretch">
-        <Box p={3} border="1px solid" borderColor="gray.200" rounded="lg">
+        <Box
+          p={3}
+          border="1px solid"
+          borderColor="gray.200"
+          rounded="lg"
+          draggable
+          onDragStart={(e) =>
+            e.dataTransfer.setData("text/user", "Elijah Oyin")
+          }
+        >
           <Text fontWeight="medium">Elijah Oyin</Text>
           <Badge colorScheme="red">On leave</Badge>
         </Box>
 
-        <Box p={3} border="1px solid" borderColor="gray.200" rounded="lg">
+        <Box
+          p={3}
+          border="1px solid"
+          borderColor="gray.200"
+          rounded="lg"
+          draggable
+          onDragStart={(e) => e.dataTransfer.setData("text/user", "Diane Lane")}
+        >
           <Text fontWeight="medium">Diane Lane</Text>
           <Badge colorScheme="red">On leave</Badge>
         </Box>

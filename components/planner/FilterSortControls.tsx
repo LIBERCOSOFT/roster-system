@@ -5,7 +5,29 @@ import { Filter, People } from "iconsax-reactjs";
 import { BiLeftArrow, BiRightArrow } from "react-icons/bi";
 import { FiChevronDown, FiPlus } from "react-icons/fi";
 
-export default function FilterSortControls() {
+interface Props {
+  currentDate?: string;
+  onPrev?: () => void;
+  onNext?: () => void;
+  onToday?: () => void;
+}
+
+export default function FilterSortControls({
+  currentDate,
+  onPrev,
+  onNext,
+  onToday,
+}: Props) {
+  const date = currentDate ? new Date(currentDate) : new Date();
+  const dayLabel = date.toLocaleString(undefined, {
+    weekday: "short",
+    day: "numeric",
+  });
+  const monthLabel = date.toLocaleString(undefined, {
+    month: "short",
+    year: "numeric",
+  });
+
   return (
     <>
       <Flex justifyContent="space-between" m={6}>
@@ -19,10 +41,10 @@ export default function FilterSortControls() {
             px={2}
             py={1}
           >
-            Mon 8
+            {dayLabel}
           </Text>
           <Text fontSize="lg" fontWeight="600">
-            Sept, 2025
+            {monthLabel}
           </Text>
         </HStack>
 
@@ -38,13 +60,13 @@ export default function FilterSortControls() {
             p={1}
           />
           <Icon as={Filter} boxSize={5} color="gray.600" cursor="pointer" />
-          <Button size="sm" variant="outline">
+          <Button size="sm" variant="outline" onClick={onPrev}>
             <BiLeftArrow />
           </Button>
-          <Button size="sm" variant="outline">
+          <Button size="sm" variant="outline" onClick={onToday}>
             Current Day
           </Button>
-          <Button size="sm" variant="outline">
+          <Button size="sm" variant="outline" onClick={onNext}>
             <BiRightArrow />
           </Button>
           <Menu.Root>
